@@ -1,0 +1,25 @@
+{
+  "name": "bundle-rocket-cli",
+  "version": "0.0.0",
+  "description": "Bundle Rocket cli",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "bundle-rocket": "bin/bundle-rocket.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bundle-rocket/bundle-rocket-cli.git"
+  },
+  "author": "Sheeta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bundle-rocket/bundle-rocket-cli/issues"
+  },
+  "homepage": "https://github.com/bundle-rocket/bundle-rocket-cli",
+  "dependencies": {
+    "yargs": "^3.30.0"
+  }
+}

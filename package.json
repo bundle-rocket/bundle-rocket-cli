@@ -20,6 +20,11 @@
   },
   "homepage": "https://github.com/bundle-rocket/bundle-rocket-cli",
   "dependencies": {
-    "yargs": "^3.30.0"
+    "yargs": "^3.30.0",
+    "chalk": "^1.1.1",
+    "q": "^1.4.1",
+    "prompt": "^0.2.14",
+    "jshashes": "^1.0.5",
+    "request": "^2.67.0"
   }
 }

@@ -13,7 +13,7 @@ function init() {
         console.log(chalk.red('[ERROR]') + ' Please use correct command');
         return;
     }
-    executer.execute(cmd);
+    // executer.execute(cmd);
 }
 
 export default init;

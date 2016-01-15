@@ -1,21 +1,19 @@
-'use strict';
+/**
+ * @file 命令解析器
+ * @author Sheeta(wuhayao@gmail.com)
+ */
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.parse = parse;
+import {argv} from 'yargs';
 
-var _yargs = require('yargs');
-
-function parse() {
-    var cmd = {};
-    if (_yargs.argv._ && _yargs.argv._.length > 0) {
-        var arg0 = _yargs.argv._[0];
-        var arg1 = _yargs.argv._[1];
-        var arg2 = _yargs.argv._[2];
-        var arg3 = _yargs.argv._[3];
-        var arg4 = _yargs.argv._[4];
-        var arg5 = _yargs.argv._[5];
+export function parse() {
+    let cmd = {};
+    if (argv._ && argv._.length > 0) {
+        let arg0 = argv._[0];
+        let arg1 = argv._[1];
+        let arg2 = argv._[2];
+        let arg3 = argv._[3];
+        let arg4 = argv._[4];
+        let arg5 = argv._[5];
 
         switch (arg0) {
             case 'register':
@@ -72,9 +70,4 @@ function parse() {
         }
     }
     return cmd;
-} /**
-   * @file 命令解析器
-   * @author Sheeta(wuhayao@gmail.com)
-   */
-
-;
+};

@@ -7,25 +7,33 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "bundle-rocket": "bin/bundle-rocket.js"
+    "bundle-rocket": "bin/bundle-rocket",
+    "br": "bin/br"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/bundle-rocket/bundle-rocket-cli.git"
   },
-  "author": "Sheeta",
+  "author": [{
+    "name": "Sheeta"
+  }, {
+    "name": "ludafa",
+    "email": "ludafa@outlook.com"
+  }],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/bundle-rocket/bundle-rocket-cli/issues"
   },
   "homepage": "https://github.com/bundle-rocket/bundle-rocket-cli",
   "dependencies": {
-    "yargs": "^3.30.0",
     "chalk": "^1.1.1",
-    "q": "^1.4.1",
-    "prompt": "^0.2.14",
+    "cli-table": "^0.3.1",
+    "isomorphic-fetch": "^2.2.1",
     "jshashes": "^1.0.5",
-    "request": "^2.67.0",
-    "cli-table": "^0.3.1"
+    "prompt": "^0.2.14",
+    "yargs": "^3.30.0"
+  },
+  "devDependencies": {
+    "babel-core": "^5.8.34"
   }
 }

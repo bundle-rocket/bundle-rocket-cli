@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+/**
+ * @file 执行入口
+ * @author Sheeta(wuhayao@gmail.com)
+ */
+
+require('babel-core/register');
+require('isomorphic-fetch');
+require('../lib');

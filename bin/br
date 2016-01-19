@@ -5,4 +5,6 @@
  * @author Sheeta(wuhayao@gmail.com)
  */
 
-require('../lib/cli').init();
+require('babel-core/register');
+require('isomorphic-fetch');
+require('../lib');

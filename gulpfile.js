@@ -8,7 +8,7 @@ const babel = require('./tools/gulp-babel.js');
 
 gulp.task('default', function () {
 
-    return gulp.src('src/**/*.js')
+    return gulp.src(['src/**/*.js'])
         .pipe(babel({
             modules: 'commonStrict',
             compact: false,

@@ -3,6 +3,9 @@
  * @author leon(ludafa@outlook.com)
  */
 
+'use strict';
+
+const path = require('path');
 const through = require('through2');
 const babel = require('babel-core');
 const gutil = require('gulp-util');
@@ -11,7 +14,9 @@ module.exports = function (options) {
 
     options = options || {};
 
-    return through.obj(function (file, encoding, callback) {
+    let usedHelpers = [];
+
+    function transform(file, encoding, callback) {
 
         if (file.isNull()) {
             callback(null, file);
@@ -36,9 +41,30 @@ module.exports = function (options) {
                 )
             );
 
-            if (!result.ignored) {
-                file.contents = new Buffer(result.code);
+            let code = result.code;
+
+            if (result.metadata.usedHelpers.length) {
+
+                const babelHelperFullPath = path.join(file.base, './babelHelpers.js');
+
+                let babelHelperRelativePath = path.relative(
+                    path.dirname(file.path),
+                    babelHelperFullPath
+                );
+
+                if (babelHelperRelativePath.charAt(0) !== '.') {
+                    babelHelperRelativePath = './' + babelHelperRelativePath;
+                }
+
+                code = ''
+                    + 'var babelHelpers = require(\'' + babelHelperRelativePath + '\');\n'
+                    + code;
+
+                usedHelpers = usedHelpers.concat(result.metadata.usedHelpers);
+
             }
+
+            file.contents = new Buffer(code);
 
             file.babel = result.metadata;
 
@@ -53,7 +79,27 @@ module.exports = function (options) {
         }
 
         callback();
+    }
 
-    });
+    function flush(callback) {
+
+        if (!usedHelpers.length) {
+            return;
+        }
+
+        var file = new gutil.File({
+            path: 'babelHelpers.js',
+            contents: new Buffer(''
+                + babel.buildExternalHelpers(usedHelpers, 'var')
+                + '\nmodule.exports = babelHelpers;'
+            )
+        });
+
+        this.push(file);
+        callback();
+
+    }
+
+    return through.obj(transform, flush);
 
 };

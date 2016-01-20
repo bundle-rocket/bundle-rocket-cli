@@ -4,14 +4,19 @@
  * @author leon(ludafa@outlook.com)
  */
 
-var executors = babelHelpers._extends({}, require('./app.js'), require('./bundle.js'), require('./user.js'));
+const executors = {
+    ...require('./app.js'),
+    ...require('./bundle.js'),
+    ...require('./user.js')
+};
 
 exports.execute = function (cmd) {
-    var type = cmd.type;
 
-    var executor = executors[type];
+    const {type} = cmd;
+    const executor = executors[type];
 
     if (executor) {
         return executor(cmd);
     }
+
 };

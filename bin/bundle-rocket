@@ -5,6 +5,5 @@
  * @author Sheeta(wuhayao@gmail.com)
  */
 
-require('babel-core/register');
 require('isomorphic-fetch');
 require('../lib');

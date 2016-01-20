@@ -4,20 +4,15 @@
  * @author leon(ludafa@outlook.com)
  */
 
-var chalk = require('chalk');
-var prompt = require('prompt');
-
-var _require = require('../dao/user.js');
-
-var add = _require.add;
-var login = _require.login;
-var logout = _require.logout;
+const chalk = require('chalk');
+const prompt = require('prompt');
+const {add, login, logout} = require('../dao/user.js');
 
 // prompt 相关配置
 prompt.message = '';
 prompt.delimiter = '';
 
-var email = {
+const email = {
     description: chalk.cyan('Enter your email address:'),
     required: true,
     type: 'string',
@@ -25,7 +20,7 @@ var email = {
     message: 'Please enter a valid email address.'
 };
 
-var name = {
+const name = {
     description: chalk.cyan('Enter your name:'),
     required: false,
     type: 'string',
@@ -33,7 +28,7 @@ var name = {
     message: 'Please enter a valid name which only include letters, digits or underscores.'
 };
 
-var password = {
+const password = {
     description: chalk.cyan('Enter your password:'),
     required: true,
     hidden: true,
@@ -88,6 +83,7 @@ function getLoginInfoFromCLI() {
             resolve(result);
         });
     });
+
 }
 
 /**
@@ -95,36 +91,38 @@ function getLoginInfoFromCLI() {
  */
 exports.register = function () {
 
-    getUserInfoFromCLI().then(function (_ref) {
-        var email = _ref.email;
-        var name = _ref.name;
-        var password = _ref.password;
-
-        return add(name, email, password).then(function () {
-            console.log('[REGISTER] succeed');
-            return login(email, password);
+    getUserInfoFromCLI()
+        .then(function ({email, name, password}) {
+            return add(name, email, password)
+                .then(function () {
+                    console.log('[REGISTER] succeed');
+                    return login(email, password);
+                });
+        })
+        .then(function () {
+            console.log('[LOGIN] succeed');
+        })
+        .catch(function (error) {
+            console.error(error.message);
         });
-    }).then(function () {
-        console.log('[LOGIN] succeed');
-    })['catch'](function (error) {
-        console.error(error.message);
-    });
+
 };
+
 
 /**
  * 登录账户
  */
 exports.login = function () {
-    getLoginInfoFromCLI().then(function (_ref2) {
-        var email = _ref2.email;
-        var password = _ref2.password;
-
-        return login(email, password);
-    }).then(function () {
-        console.log('[LOGIN] succeed!');
-    })['catch'](function (error) {
-        console.error(error.message);
-    });
+    getLoginInfoFromCLI()
+        .then(function ({email, password}) {
+            return login(email, password);
+        })
+        .then(function () {
+            console.log('[LOGIN] succeed!');
+        })
+        .catch(function (error) {
+            console.error(error.message);
+        });
 };
 
 /**
@@ -132,9 +130,11 @@ exports.login = function () {
  * 由于服务器目前并不存储登录状态，这里仅仅是删除本地 token。
  */
 exports.logout = function () {
-    logout().then(function () {
-        console.log('bye');
-    })['catch'](function (error) {
-        console.error(error.message);
-    });
+    logout()
+        .then(function () {
+            console.log('bye');
+        })
+        .catch(function (error) {
+            console.error(error.message);
+        });
 };

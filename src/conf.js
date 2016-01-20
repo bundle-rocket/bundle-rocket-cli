@@ -4,6 +4,6 @@
  */
 
 module.exports = {
-  name: 'bundle-rocket',
-  serverURL: 'http://localhost:8080'
+    name: 'bundle-rocket',
+    serverURL: 'http://localhost:8080'
 };

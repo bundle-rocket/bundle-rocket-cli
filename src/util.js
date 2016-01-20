@@ -3,7 +3,7 @@
  * @author leon(ludafa@outlook.com)
  */
 
-var Table = require('cli-table');
+const Table = require('cli-table');
 
 /**
  * 将一组信息以表格形式输出
@@ -13,11 +13,12 @@ var Table = require('cli-table');
  */
 exports.printTable = function printTable(columns, readData) {
 
-  var table = new Table({
-    head: columns,
-    style: { head: ['cyan'] }
-  });
+    var table = new Table({
+        head: columns,
+        style: {head: ['cyan']}
+    });
 
-  readData(table);
-  console.log(table.toString());
+    readData(table);
+    console.log(table.toString());
+
 };

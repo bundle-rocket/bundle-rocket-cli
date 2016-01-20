@@ -4,11 +4,14 @@
  * @author leon(ludafa@outlook.com)
  */
 
-var fs = require('fs');
-var path = require('path');
-var chalk = require('chalk');
+const fs = require('fs');
+const path = require('path');
+const chalk = require('chalk');
 
-var configFilePath = path.join(process.env.LOCALAPPDATA || process.env.HOME, '.bundle-rocket.config');
+const configFilePath = path.join(
+    process.env.LOCALAPPDATA || process.env.HOME,
+    '.bundle-rocket.config'
+);
 
 /**
  * 保存 session 信息到.bundle-rocket.config 文件中
@@ -23,19 +26,31 @@ exports.save = function (data, token) {
 
         return new Promise(function (resolve, reject) {
 
-            fs.writeFile(configFilePath, babelHelpers._extends({}, currentSession, data, { token: token }), { encoding: 'utf-8' }, function (err) {
+            fs.writeFile(
+                configFilePath,
+                {...currentSession, ...data, token},
+                {encoding: 'utf-8'},
+                function (err) {
 
-                if (err) {
-                    reject(err);
-                    return;
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+
+                    console.log(''
+                        + 'Successfully logged in as ' + chalk.cyan(data.email)
+                        + '. You can check out account info in ' + chalk.cyan(configFilePath)
+                        + '.'
+                    );
+
+                    resolve();
                 }
+            );
 
-                console.log('' + 'Successfully logged in as ' + chalk.cyan(data.email) + '. You can check out account info in ' + chalk.cyan(configFilePath) + '.');
-
-                resolve();
-            });
         });
+
     });
+
 };
 
 /**
@@ -57,7 +72,9 @@ exports.clear = function () {
             resolve();
             console.log('bye');
         });
+
     });
+
 };
 
 /**
@@ -80,12 +97,17 @@ exports.get = function () {
 
                 try {
                     resolve(JSON.parse(data));
-                } catch (err) {
+                }
+                catch (err) {
                     reject(err);
                 }
+
             });
+
         });
+
     });
+
 };
 
 /**
@@ -94,12 +116,15 @@ exports.get = function () {
  * @return {Promise}
  */
 exports.getToken = function () {
-    return exports.get().then(function (session) {
+    return exports
+        .get()
+        .then(function (session) {
 
-        if (session && session.token) {
-            return session.token;
-        }
+            if (session && session.token) {
+                return session.token;
+            }
 
-        throw new Error('no valid session');
-    });
+            throw new Error('no valid session');
+
+        });
 };

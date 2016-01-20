@@ -3,20 +3,10 @@
  * @author leon(ludafa@outlook.com)
  */
 
-var _require = require('../conf.js');
-
-var serverURL = _require.serverURL;
-
-var _require2 = require('../session.js');
-
-var save = _require2.save;
-var clear = _require2.clear;
-
-var _require3 = require('jshashes');
-
-var SHA256 = _require3.SHA256;
-
-var sha256 = new SHA256();
+const {serverURL} = require('../conf.js');
+const {save, clear} = require('../session.js');
+const {SHA256} = require('jshashes');
+const sha256 = new SHA256();
 
 /**
  * 创建用户
@@ -28,18 +18,19 @@ var sha256 = new SHA256();
  */
 exports.add = function (name, email, password) {
 
-    return fetch(serverURL + '/users', {
+    return fetch(`${serverURL}/users`, {
         method: 'POST',
         headers: {
             'content-type': 'application/json',
             'accept-type': 'application/json'
         },
         body: JSON.stringify({
-            name: name,
-            email: email,
+            name,
+            email,
             password: sha256.hex(password)
         })
     });
+
 };
 
 /**
@@ -51,21 +42,22 @@ exports.add = function (name, email, password) {
  */
 exports.login = function (email, password) {
 
-    return fetch(serverURL + '/access-token', {
+    return fetch(`${serverURL}/access-token`, {
         method: 'POST',
         headers: {
             'content-type': 'application/json',
             'accept-type': 'application/json'
         },
         body: JSON.stringify({
-            email: email,
+            email,
             password: sha256.hex(password)
         })
     }).then(function (response) {
         return response.json();
     }).then(function (token) {
-        return save({ email: email, password: password }, token);
+        return save({email, password}, token);
     });
+
 };
 
 exports.logout = function () {

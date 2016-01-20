@@ -3,7 +3,7 @@
  * @author leon(ludafa@outlook.com)
  */
 
-var actions = exports.actions = {
+const actions = exports.actions = {
     INIT: 'INIT'
 };
 
@@ -11,14 +11,18 @@ exports.parsers = [{
 
     name: 'init',
     description: 'init a bundle-rocket app configuration',
-    parseArgv: function parseArgv(yargs) {
+    parseArgv(yargs) {
 
-        yargs.demand(2, 2).usage('bundle-rocket init').help('help');
+        yargs
+            .demand(2, 2)
+            .usage('bundle-rocket init')
+            .help('help');
+
     },
-    parse: function parse(_, options) {
+    parse(_, options) {
         return {
             type: actions.INIT,
-            options: options
+            options
         };
     }
 

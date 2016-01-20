@@ -53,7 +53,12 @@ function execute(cmd) {
                         break;
                 }
             }, function (err) {
-                console.log('' + chalk.yellow('[ERROR] ') + chalk.cyan(configFilePath) + ' is blank or not exists.' + ' Please register or login first.');
+                console.log(''
+                    + chalk.yellow('[ERROR] ')
+                    + chalk.cyan(configFilePath)
+                    + ' is blank or not exists.'
+                    + ' Please register or login first.'
+                );
             });
     }
 }

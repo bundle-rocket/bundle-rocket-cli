@@ -82,3 +82,33 @@ exports.remove = function (nameOrId) {
         });
 
 };
+
+const fs = require('fs');
+const path = require('path');
+const CONF_FILE_NAME = 'bundle-rocket.json';
+
+exports.createConf = function (conf) {
+
+    const confFilePath = path.join(process.cwd(), CONF_FILE_NAME);
+
+    return new Promise(function (resolve, reject) {
+
+        fs.writeFile(
+            confFilePath,
+            JSON.stringify(conf, null, 4),
+            'utf8',
+            function (err) {
+
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                resolve();
+
+            }
+        );
+
+    });
+
+};

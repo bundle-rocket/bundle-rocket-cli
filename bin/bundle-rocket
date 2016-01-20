@@ -5,5 +5,7 @@
  * @author Sheeta(wuhayao@gmail.com)
  */
 
-require('isomorphic-fetch');
+const fetch = require('node-fetch');
+global.fetch = fetch;
 require('../lib');
+

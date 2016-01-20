@@ -48,10 +48,19 @@ const parsers = [{
 }, {
     name: 'register',
     description: 'register an account to a bundle rocket server',
-    parseArgs(yargs) {},
-    parse(commands, args) {
+    parseArgs(yargs) {
+        yargs
+            .demand(2, 2)
+            .usage('$0 register <server-url>')
+            .example('$0 register http://bundle-rocket.org');
+    },
+    parse([serverURL], args) {
         return {
-            type: actions.REGISTER
+            type: actions.REGISTER,
+            payload: {
+                ...args,
+                serverURL
+            }
         };
     }
 }];

@@ -20,7 +20,7 @@ const configFilePath = path.join(
  * @param {Object} token 包含 access token 的对象
  * @return {Promise}
  */
-exports.save = function (data, token) {
+exports.save = function (data) {
 
     return exports.get().then(function (currentSession) {
 
@@ -28,7 +28,7 @@ exports.save = function (data, token) {
 
             fs.writeFile(
                 configFilePath,
-                {...currentSession, ...data, token},
+                JSON.stringify({...currentSession, ...data}, 0, 4),
                 {encoding: 'utf-8'},
                 function (err) {
 
@@ -58,19 +58,30 @@ exports.save = function (data, token) {
  *
  * @return {Promise}
  */
-exports.clear = function () {
+exports.clear = function (serverURL) {
 
-    return new Promise(function (resolve, reject) {
+    return exports.get().then(function (session) {
 
-        fs.writeFile(configFilePath, '{}', 'utf-8', function (err) {
+        delete session[serverURL];
 
-            if (err) {
-                reject();
-                return;
-            }
+        return new Promise(function (resolve, reject) {
 
-            resolve();
-            console.log('bye');
+            fs.writeFile(
+                configFilePath,
+                JSON.stringify(session),
+                'utf-8',
+                function (err) {
+
+                    if (err) {
+                        reject();
+                        return;
+                    }
+
+                    resolve();
+
+                }
+            );
+
         });
 
     });
@@ -99,7 +110,7 @@ exports.get = function () {
                     resolve(JSON.parse(data));
                 }
                 catch (err) {
-                    reject(err);
+                    resolve({});
                 }
 
             });

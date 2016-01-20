@@ -37,7 +37,7 @@ exports.parsers = [{
             .command('list', 'list all the bundle-rocket servers of your app', function (yargs) {
                 yargs
                     .wrap(null)
-                    .demand(3, 3)
+                    .demand(2, 2)
                     .usage('$0 server list');
             })
             .command('detail', 'show the detail of a bundle-rocket server', function (yargs) {

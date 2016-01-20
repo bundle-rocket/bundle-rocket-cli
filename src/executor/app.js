@@ -7,7 +7,7 @@
 const chalk = require('chalk');
 const {printTable} = require('../util.js');
 
-const {add, get, list, remove} = require('../dao/app');
+const {add, get, list, remove, createConf} = require('../dao/app');
 
 /**
  * 添加 APP
@@ -102,7 +102,50 @@ function appRemove({appName}) {
 
 }
 
+const path = require('path');
+const prompt = require('prompt');
+
+function init(command) {
+
+    let pkg = {};
+
+    try {
+        pkg = require(path.join(process.cwd(), 'package.json'));
+    }
+    catch (error) {}
+
+    prompt.start();
+
+    const schema = {
+        properties: {
+            name: {
+                'default': pkg.name,
+                'message': 'please input a name',
+                'required': true
+            }
+        }
+    };
+
+    prompt.get(schema, function (error, result) {
+
+        if (error) {
+            return;
+        }
+
+        createConf(result)
+            .then(function () {
+                console.log('bundle-rocket.json created');
+            })
+            .catch(function (error) {
+                console.error(error.message);
+            });
+
+    });
+
+}
+
 module.exports = {
+    init,
     appAdd,
     appList,
     appDetail,

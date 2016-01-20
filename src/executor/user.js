@@ -6,6 +6,7 @@
 
 const chalk = require('chalk');
 const prompt = require('prompt');
+
 const {add, login, logout} = require('../dao/user.js');
 
 // prompt 相关配置
@@ -88,22 +89,35 @@ function getLoginInfoFromCLI() {
 
 /**
  * 注册账户，如果注册成功则触发自动登录
+ *
+ * @param {Object} command 命令参数
  */
-exports.register = function () {
+exports.register = function (command) {
+
+    const {serverURL} = command;
 
     getUserInfoFromCLI()
         .then(function ({email, name, password}) {
-            return add(name, email, password)
+            return add(serverURL, name, email, password)
                 .then(function () {
                     console.log('[REGISTER] succeed');
                     return login(email, password);
+                })
+                .then(function () {
+                    console.log('[LOGIN] succeed');
+                })
+                .catch(function (error) {
+
+                    switch (error.status) {
+                        case 409:
+                            console.error(`email ${chalk.red(email)} has been token, please try another one`);
+                            break;
+                        default:
+                            console.error(error.stack || error.message);
+                            break;
+                    }
+
                 });
-        })
-        .then(function () {
-            console.log('[LOGIN] succeed');
-        })
-        .catch(function (error) {
-            console.error(error.message);
         });
 
 };
@@ -111,11 +125,16 @@ exports.register = function () {
 
 /**
  * 登录账户
+ *
+ * @param {Object} command 登录命令
  */
-exports.login = function () {
+exports.login = function (command) {
+
+    const {serverURL} = command.payload;
+
     getLoginInfoFromCLI()
         .then(function ({email, password}) {
-            return login(email, password);
+            return login(serverURL, email, password);
         })
         .then(function () {
             console.log('[LOGIN] succeed!');
@@ -128,9 +147,11 @@ exports.login = function () {
 /**
  * 登出账户
  * 由于服务器目前并不存储登录状态，这里仅仅是删除本地 token。
+ *
+ * @param {Object} command 登出命令
  */
-exports.logout = function () {
-    logout()
+exports.logout = function (command) {
+    logout(command.payload.serverURL)
         .then(function () {
             console.log('bye');
         })

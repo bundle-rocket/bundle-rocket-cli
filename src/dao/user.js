@@ -3,7 +3,6 @@
  * @author leon(ludafa@outlook.com)
  */
 
-const {serverURL} = require('../conf.js');
 const {save, clear} = require('../session.js');
 const {SHA256} = require('jshashes');
 const sha256 = new SHA256();
@@ -11,12 +10,13 @@ const sha256 = new SHA256();
 /**
  * 创建用户
  *
+ * @param {string} serverURL 服务器地址
  * @param {string} name 用户名
  * @param {string} email 邮箱
  * @param {string} password 密码
  * @return {Promise}
  */
-exports.add = function (name, email, password) {
+exports.add = function (serverURL, name, email, password) {
 
     return fetch(`${serverURL}/users`, {
         method: 'POST',
@@ -29,6 +29,16 @@ exports.add = function (name, email, password) {
             email,
             password: sha256.hex(password)
         })
+    }).then(function (response) {
+
+        if (response.ok) {
+            return response.json();
+        }
+
+        const {status} = response;
+
+        throw {status};
+
     });
 
 };
@@ -36,11 +46,12 @@ exports.add = function (name, email, password) {
 /**
  * 登录
  *
+ * @param {string} serverURL 服务器地址
  * @param {string} email 邮箱
  * @param {string} password 密码
  * @return {Promise}
  */
-exports.login = function (email, password) {
+exports.login = function (serverURL, email, password) {
 
     return fetch(`${serverURL}/access-token`, {
         method: 'POST',
@@ -53,13 +64,32 @@ exports.login = function (email, password) {
             password: sha256.hex(password)
         })
     }).then(function (response) {
-        return response.json();
-    }).then(function (token) {
-        return save({email, password}, token);
+
+        if (response.ok) {
+            return response.json();
+        }
+
+        throw {status: response.status};
+
+    }).then(function (data) {
+
+        const {token} = data;
+
+        return save({
+            email,
+            [serverURL]: token
+        });
+
     });
 
 };
 
-exports.logout = function () {
-    return clear();
+/**
+ * 登出
+ *
+ * @param {string} serverURL 服务器地址
+ * @return {Promise}
+ */
+exports.logout = function (serverURL) {
+    return clear(serverURL);
 };

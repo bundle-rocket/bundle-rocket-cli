@@ -6,5 +6,4 @@
 const {parse} = require('./parser');
 const {execute} = require('./executor');
 
-const command = parse();
-console.log(command);
+execute(parse());

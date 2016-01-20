@@ -17,7 +17,12 @@ gulp.task('default', function () {
             externalHelpers: true,
             loose: 'all'
         }))
+        .on('error', function (error) {
+            console.error(error);
+            this.emit('end');
+        })
         .pipe(gulp.dest('lib'));
+
 
 });
 

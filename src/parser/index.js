@@ -13,10 +13,11 @@ const argsHelper = yargs
     .help('help');
 
 const parsers = [
-    ...require('./main.js'),
-    ...require('./server.js'),
-    ...require('./user.js'),
-    ...require('./bundle.js')
+    require('./main.js'),
+    require('./app.js'),
+    require('./server.js'),
+    require('./user.js'),
+    require('./bundle.js')
 ];
 
 const argv = parsers
@@ -35,6 +36,22 @@ const argv = parsers
         argsHelper
     )
     .argv;
+
+const parserMap = parsers
+    .reduce(
+        function (allParsers, group) {
+            return [...allParsers, ...group.parsers];
+        },
+        []
+    )
+    .reduce(
+        function (map, parser) {
+            const {name, parse} = parser;
+            map[name] = parse;
+            return map;
+        },
+        {}
+    );
 
 exports.actions = parsers
     .reduce(function (actions, parser) {
@@ -56,7 +73,7 @@ exports.parse = function () {
 
     const [name, ...commands] = _;
 
-    const parse = parsers[name];
+    const parse = parserMap[name];
 
     if (!parse) {
         argsHelper.showHelp();

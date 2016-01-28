@@ -3,22 +3,27 @@
  * @author leon(ludafa@outlook.com)
  */
 
-const {save, clear} = require('../session.js');
+const {addAccessToken, removeAccessToken} = require('../dao/session.js');
 const {SHA256} = require('jshashes');
 const sha256 = new SHA256();
+
+const logger = require('../logger.js');
 
 /**
  * 创建用户
  *
- * @param {string} serverURL 服务器地址
  * @param {string} name 用户名
  * @param {string} email 邮箱
  * @param {string} password 密码
+ * @param {?Object} options 公用参数
+ * @param {string} options.serverURL 服务器地址
  * @return {Promise}
  */
-exports.add = function (serverURL, name, email, password) {
+exports.add = function (name, email, password, options) {
 
-    return fetch(`${serverURL}/users`, {
+    const {registry} = options;
+
+    return fetch(`${registry}/users`, {
         method: 'POST',
         headers: {
             'content-type': 'application/json',
@@ -46,14 +51,19 @@ exports.add = function (serverURL, name, email, password) {
 /**
  * 登录
  *
- * @param {string} serverURL 服务器地址
  * @param {string} email 邮箱
  * @param {string} password 密码
+ * @param {Object} options 参数
+ * @param {string} options.registry 服务器地址
  * @return {Promise}
  */
-exports.login = function (serverURL, email, password) {
+exports.login = function (email, password, options) {
 
-    return fetch(`${serverURL}/access-token`, {
+    logger.verbose('fetching access token: email %s', email);
+
+    const {registry} = options;
+
+    return fetch(`${registry}/access-token`, {
         method: 'POST',
         headers: {
             'content-type': 'application/json',
@@ -63,23 +73,10 @@ exports.login = function (serverURL, email, password) {
             email,
             password: sha256.hex(password)
         })
-    }).then(function (response) {
-
-        if (response.ok) {
-            return response.json();
-        }
-
-        throw {status: response.status};
-
-    }).then(function (data) {
-
+    }).then(require('./middleware/json.js')).then(function (data) {
         const {token} = data;
-
-        return save({
-            email,
-            [serverURL]: token
-        });
-
+        logger.verbose('[access-token] [POST] access token succeed: access token %s', token);
+        return addAccessToken(email, registry, token);
     });
 
 };
@@ -87,9 +84,10 @@ exports.login = function (serverURL, email, password) {
 /**
  * 登出
  *
- * @param {string} serverURL 服务器地址
+ * @param {Object} options 命令参数
+ * @param {string} options.serverURL 服务器地址
  * @return {Promise}
  */
-exports.logout = function (serverURL) {
-    return clear(serverURL);
+exports.logout = function (options) {
+    return removeAccessToken(options);
 };

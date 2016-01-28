@@ -8,7 +8,8 @@ const executors = {
     ...require('./app.js'),
     ...require('./bundle.js'),
     ...require('./user.js'),
-    ...require('./server.js')
+    ...require('./server.js'),
+    ...require('./config.js')
 };
 
 exports.execute = function (command) {

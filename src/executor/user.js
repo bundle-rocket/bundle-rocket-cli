@@ -6,7 +6,9 @@
 
 const chalk = require('chalk');
 const prompt = require('prompt');
+const logger = require('../logger.js');
 
+const {getConfig} = require('../dao/config.js');
 const {add, login, logout} = require('../dao/user.js');
 
 // prompt 相关配置
@@ -92,32 +94,36 @@ function getLoginInfoFromCLI() {
  *
  * @param {Object} command 命令参数
  */
-exports.register = function (command) {
+exports.register = function ({payload}) {
 
-    const {serverURL} = command;
+    Promise.all([getUserInfoFromCLI(), getConfig()])
+        .then(function ([{email, name, password}, conf]) {
 
-    getUserInfoFromCLI()
-        .then(function ({email, name, password}) {
-            return add(serverURL, name, email, password)
+            const options = {...conf, ...payload};
+
+            return add(name, email, password, options)
                 .then(function () {
-                    console.log('[REGISTER] succeed');
-                    return login(email, password);
+                    logger.log('[REGISTER] succeed');
+                    return login(email, password, options);
                 })
                 .then(function () {
-                    console.log('[LOGIN] succeed');
+                    logger.log('[LOGIN] succeed');
                 })
                 .catch(function (error) {
 
                     switch (error.status) {
                         case 409:
-                            console.error(`email ${chalk.red(email)} has been token, please try another one`);
+                            logger.error(`email ${chalk.red(email)} has been token, please try another one`);
                             break;
                         default:
-                            console.error(error.stack || error.message);
+                            logger.error(error.stack || error.message);
                             break;
                     }
 
                 });
+        })
+        .catch(function (error) {
+            logger.log(error);
         });
 
 };
@@ -130,18 +136,17 @@ exports.register = function (command) {
  */
 exports.login = function (command) {
 
-    const {serverURL} = command.payload;
-
-    getLoginInfoFromCLI()
-        .then(function ({email, password}) {
-            return login(serverURL, email, password);
+    Promise.all([getLoginInfoFromCLI(), getConfig()])
+        .then(function ([{email, password}, config]) {
+            return login(email, password, {...config, ...command.payload});
         })
         .then(function () {
             console.log('[LOGIN] succeed!');
         })
         .catch(function (error) {
-            console.error(error.message);
+            logger.error(error.message);
         });
+
 };
 
 /**
@@ -149,13 +154,19 @@ exports.login = function (command) {
  * 由于服务器目前并不存储登录状态，这里仅仅是删除本地 token。
  *
  * @param {Object} command 登出命令
+ * @param {Object} command.payload 命令附加参数
  */
 exports.logout = function (command) {
-    logout(command.payload.serverURL)
+
+    getConfig()
+        .then(function (config) {
+            return logout({...config, ...command.payload});
+        })
         .then(function () {
             console.log('bye');
         })
         .catch(function (error) {
             console.error(error.message);
         });
+
 };

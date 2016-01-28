@@ -13,11 +13,10 @@ const argsHelper = yargs
     .help('help');
 
 const parsers = [
-    require('./main.js'),
     require('./app.js'),
-    require('./server.js'),
     require('./user.js'),
-    require('./bundle.js')
+    require('./bundle.js'),
+    require('./config.js')
 ];
 
 const argv = parsers
@@ -30,8 +29,7 @@ const argv = parsers
     .reduce(
         function (helper, parser) {
             const {name, description, parseArgs} = parser;
-            helper.command(name, description, parseArgs);
-            return helper;
+            return helper.command(name, description, parseArgs);
         },
         argsHelper
     )

@@ -4,8 +4,8 @@
   "description": "Bundle Rocket cli",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "gulp"
+    "prepublish": "gulp",
+    "install": "node scripts/install.js"
   },
   "bin": {
     "bundle-rocket": "bin/bundle-rocket",
@@ -32,9 +32,14 @@
   "dependencies": {
     "chalk": "^1.1.1",
     "cli-table": "^0.3.1",
+    "form-data": "^0.2.0",
     "jshashes": "^1.0.5",
     "node-fetch": "^1.3.3",
     "prompt": "^0.2.14",
+    "semver": "^5.1.0",
+    "tar-fs": "^1.9.0",
+    "thunkify": "^2.1.2",
+    "winston": "^2.1.1",
     "yargs": "^3.30.0"
   },
   "devDependencies": {

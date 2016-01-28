@@ -4,65 +4,46 @@
  */
 
 const actions = {
-    APP_DETAIL: 'APP_DETAIL',
-    APP_KEY: 'APP_KEY',
-    APP_LIST: 'APP_LIST'
+    APP_INIT: 'APP_INIT',
+    APP_VIEW: 'APP_VIEW'
 };
 
-const {compose} = require('./helper.js');
-
-const parsers = [{
-    name: 'app',
-    description: 'View the detail of the app',
-    parseArgs(yargs) {
-        yargs
-            .demand(2, 2)
-            .usage('$0 app <command>')
-            .command('detail', 'View the app detail', function (yargs) {
-                yargs
-                    .usage('$0 app detail')
-                    .example('$0 app detail');
-            })
-            .command('key', 'fetch the deployment key of this app', function (yargs) {
-                yargs
-                    .usage('$0 app key')
-                    .example('$0 app key');
-            })
-            .command('list', 'List all the apps of your account', function (yargs) {
-                yargs
-                    .usage('$0 app list <server-url>')
-                    .example('$0 app list http://bundle-rocket.org')
-                    .demand(3, 3);
-            });
+const parsers = [
+    {
+        name: 'init',
+        description: 'Initialize an app package information',
+        parseArgs(yargs) {
+            yargs
+                .demand(1, 1)
+                .usage('$0 init');
+        },
+        parse(_, args) {
+            return {
+                type: 'APP_INIT',
+                payload: args
+            };
+        }
     },
-    parse: compose('app', {
-
-        detail(_, options) {
-            return {
-                type: actions.APP_DETAIL,
-                payload: options
-            };
+    {
+        name: 'view',
+        description: 'View registry info',
+        parseArgs(yargs) {
+            yargs
+                .example('$0 view <name>')
+                .usage('$0 view my-demo')
+                .demand(2, 2);
         },
-
-        key(_, options) {
+        parse([appName], options) {
             return {
-                type: actions.APP_KEY,
-                payload: options
-            };
-        },
-
-        list([serverURL], options) {
-            return {
-                type: actions.APP_LIST,
+                type: actions.APP_VIEW,
                 payload: {
                     ...options,
-                    serverURL
+                    appName
                 }
             };
         }
-
-    })
-}];
+    }
+];
 
 module.exports = {
     actions,

@@ -14,17 +14,14 @@ const parsers = [{
     description: 'login to a bundle rocket server',
     parseArgs(yargs) {
         yargs
-            .demand(2, 2)
-            .usage('bundle-rocket login <server-url>')
-            .example('bundle-rocket login http://bundle-rocket.org');
+            .demand(1, 1)
+            .usage('bundle-rocket login')
+            .example('bundle-rocket login');
     },
-    parse([serverURL], options) {
+    parse(_, options) {
         return {
             type: actions.LOGIN,
-            payload: {
-                ...options,
-                serverURL
-            }
+            payload: options
         };
     }
 }, {
@@ -32,17 +29,14 @@ const parsers = [{
     description: 'logout from current bundle rocket server',
     parseArgs(yargs) {
         yargs
-            .demand(1, 2)
-            .usage('bundle-rocket logout [server-url]')
-            .example('bundle-rocket logout http://bundle-rocket.org');
+            .demand(1, 1)
+            .usage('bundle-rocket logout')
+            .example('bundle-rocket logout');
     },
-    parse([serverURL], options) {
+    parse(_, options) {
         return {
             type: actions.LOGOUT,
-            payload: {
-                ...options,
-                serverURL
-            }
+            payload: options
         };
     }
 }, {
@@ -50,16 +44,15 @@ const parsers = [{
     description: 'register an account to a bundle rocket server',
     parseArgs(yargs) {
         yargs
-            .demand(2, 2)
-            .usage('$0 register <server-url>')
-            .example('$0 register http://bundle-rocket.org');
+            .demand(1, 1)
+            .usage('$0 register')
+            .example('$0 register');
     },
-    parse([serverURL], args) {
+    parse(_, args) {
         return {
             type: actions.REGISTER,
             payload: {
-                ...args,
-                serverURL
+                ...args
             }
         };
     }

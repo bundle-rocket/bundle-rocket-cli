@@ -16,14 +16,14 @@ const COMMANDS = {
     prerelease: true
 };
 
-function isValidVersion(version) {
-    return COMMANDS[version] || semver.valid(version);
+function isReservedVersion(version) {
+    return COMMANDS[version];
 }
 
 const {getConfig} = require('../dao/config.js');
 const {resolveAccessToken} = require('../dao/session.js');
 const {get, save, getFilePath} = require('../dao/package.js');
-const {publish} = require('../dao/bundle.js');
+const {publish, deploy} = require('../dao/bundle.js');
 const path = require('path');
 const logger = require('../logger.js');
 
@@ -76,20 +76,46 @@ exports.version = function (command) {
 
     const {version, preid, ...rest} = command.payload;
 
-    if (!isValidVersion(version)) {
-        logger.error(`${chalk.red(version)} is not a valid semver version. please try again.`);
-        return;
-    }
-
     get().then(function (pkg) {
-        const nextVersion = semver.inc(pkg.version, version, preid);
+
+        const nextVersion = isReservedVersion(version)
+            ? semver.inc(pkg.version, version, preid)
+            : version;
+
+        if (semver.gte(pkg.version, nextVersion)) {
+            logger.warn(`${version} must be higher than current version ${nextVersion}`);
+            return;
+        }
+
+        logger.verbose(`[bundle] [requestedVersion ${version}] [nextVerion ${nextVersion}]`);
+
         return save({...pkg, version: nextVersion})
             .then(function () {
-                logger.verbose(`bump version to ${chalk.green(nextVersion)}`);
+                logger.info(`bump version to ${chalk.green(nextVersion)}`);
             });
+
     }).catch(function (error) {
         logger.error(`${chalk.red(error.message)}`);
     });
 
+
+};
+
+exports.deploy = function ({payload = {}} = {}) {
+
+    const {version, ...rest} = payload;
+
+    Promise.all([get(), getConfig()]).then(function ([pkg, config]) {
+        const {name} = pkg;
+        const combinedConfig = {...config, ...rest};
+        const {servers, registry} = combinedConfig;
+        const accessToken = resolveAccessToken(registry, servers);
+        return deploy(accessToken, version, name, combinedConfig);
+    }).then(function ({bundle}) {
+        logger.verbose(`[bundle] [deploy]`, bundle);
+        logger.info(`${version} deployed`);
+    }).catch(function ({message}) {
+        logger.error(message);
+    });
 
 };

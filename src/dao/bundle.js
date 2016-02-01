@@ -4,6 +4,7 @@
  */
 
 const logger = require('../logger.js');
+const json = require('./middleware/json.js');
 
 // exports.list = function bundleList(token, appName) {
 //     getAppId(token, appName).then(function (appId) {
@@ -130,27 +131,20 @@ exports.publish = function (token, bundle, options) {
             });
 
         })
-        .then(function (response) {
+        .then(json);
 
-            return response
-                .json()
-                .then(function (data) {
+};
 
-                    if (response.ok) {
-                        return data;
-                    }
+exports.deploy = function (accessToken, version, appName, options) {
 
-                    const {status, statusText} = response;
+    const {registry} = options;
 
-                    throw {
-                        ...data,
-                        status,
-                        statusText
-                    };
-
-                });
-
-        });
+    return fetch(`${registry}/apps/${appName}/${version}`, {
+        method: 'PATCH',
+        headers: {
+            authorization: `Bearer ${accessToken}`
+        }
+    }).then(json);
 
 };
 

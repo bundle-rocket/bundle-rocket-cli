@@ -85,7 +85,7 @@ exports.parsers = [
                 .usage('$0 deploy <version>')
                 .example('$0 deploy 1.0.0')
                 .wrap(null)
-                .demand(3, 3);
+                .demand(2, 2);
         },
         parse([version], options) {
             return {

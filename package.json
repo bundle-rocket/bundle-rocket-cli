@@ -44,8 +44,14 @@
   },
   "devDependencies": {
     "babel-core": "^5.8.34",
+    "cz-conventional-changelog": "^1.1.5",
     "gulp": "^3.9.0",
     "gulp-util": "^3.0.7",
     "through2": "^2.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

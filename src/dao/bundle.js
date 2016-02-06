@@ -107,7 +107,15 @@ function createHash(bundlePath) {
 exports.publish = function (token, bundle, options) {
 
     const {registry} = options;
-    const {appName, bundleVersion, appVersion, bundlePath} = bundle;
+
+    const {
+        appName,
+        bundleVersion,
+        appVersion,
+        bundlePath,
+        message,
+        main
+    } = bundle;
 
     return createHash(bundlePath)
         .then(function ({shasum, buffer}) {
@@ -118,6 +126,8 @@ exports.publish = function (token, bundle, options) {
             form.append('appVersion', appVersion);
             form.append('bundleVersion', bundleVersion);
             form.append('shasum', shasum);
+            form.append('main', main);
+            form.append('message', message);
             form.append('bundle', buffer, {
                 filename: 'bundle.tar.gz'
             });
@@ -147,4 +157,3 @@ exports.deploy = function (accessToken, version, appName, options) {
     }).then(json);
 
 };
-

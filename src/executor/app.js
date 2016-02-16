@@ -5,10 +5,9 @@
  */
 
 const chalk = require('chalk');
-const {printTable} = require('../util.js');
 const {valid} = require('semver');
 
-const {add, get, list, remove, createConf} = require('../dao/app');
+const {get, createConf} = require('../dao/app');
 
 const path = require('path');
 const prompt = require('prompt');

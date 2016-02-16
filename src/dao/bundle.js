@@ -3,7 +3,6 @@
  * @author leon(ludafa@outlook.com)
  */
 
-const logger = require('../logger.js');
 const json = require('./middleware/json.js');
 
 // exports.list = function bundleList(token, appName) {
@@ -38,37 +37,6 @@ const json = require('./middleware/json.js');
 //             });
 //     }, function (error) {
 //         console.log(chalk.yellow('[GET APP] ' + error.status) + ' ' + error.info);
-//     });
-// }
-
-// exports.get = function () {
-
-// };
-
-// function upload(token, appId, appVersion, bundleVersion, bundleDir, bundleSize) {
-//     var url = URL_APP + '/' + appId + '/bundles';
-//     var formData = {
-//         appVersion: appVersion,
-//         bundleVersion: bundleVersion,
-//         bundleSize: bundleSize,
-//         bundle: fs.createReadStream(bundleDir)
-//     };
-//     request.post({
-//         url: url,
-//         headers: {
-//             authorization: 'Bearer ' + token
-//         },
-//         formData: formData
-//     }, function (err, response, body) {
-//         if (err) {
-//             return console.error('Upload failed, please try again');
-//         }
-//         if (response.statusCode === 200) {
-//             console.log(body);
-//         }
-//         else {
-//             console.log(chalk.yellow('[UPLOAD] ' + response.statusCode) + ' ' + body);
-//         }
 //     });
 // }
 

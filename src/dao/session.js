@@ -5,7 +5,6 @@
  */
 
 const {getUserConfig, saveUserConfig} = require('./config.js');
-const logger = require('../logger.js');
 
 /**
  * 保存 session 信息到 .bundle-rocket.json 文件中

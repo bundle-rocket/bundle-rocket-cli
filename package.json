@@ -4,8 +4,8 @@
   "description": "Bundle Rocket cli",
   "main": "index.js",
   "scripts": {
-    "prepublish": "gulp",
-    "install": "node scripts/install.js"
+    "prepublish": "npm run lint && gulp",
+    "lint": "fecs src"
   },
   "bin": {
     "bundle-rocket": "bin/bundle-rocket",

@@ -48,7 +48,7 @@ exports.serverAdd = function (command) {
 
         const {servers = []} = conf;
 
-        for (var i = 0, len = servers.length; i < len; ++i) {
+        for (let i = 0, len = servers.length; i < len; ++i) {
 
             if (servers[i].name === serverName) {
                 console.error(`server ${chalk.red(serverName)} already exists, please remove it first`);

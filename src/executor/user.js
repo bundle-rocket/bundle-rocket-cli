@@ -50,9 +50,9 @@ function getUserInfoFromCLI() {
         prompt.start();
         prompt.get({
             properties: {
-                email: email,
-                name: name,
-                password: password
+                email,
+                name,
+                password
             }
         }, function (err, result) {
             if (err) {
@@ -75,8 +75,8 @@ function getLoginInfoFromCLI() {
         prompt.start();
         prompt.get({
             properties: {
-                email: email,
-                password: password
+                email,
+                password
             }
         }, function (err, result) {
             if (err) {

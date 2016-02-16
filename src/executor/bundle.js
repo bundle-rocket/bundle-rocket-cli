@@ -125,7 +125,7 @@ function getBundleVersionDetail(appVersion) {
                     'description': `Minimum app version required`,
                     'message': `Minimum app version cannot less then current verison: ${appVersion}`,
                     'required': true,
-                    'conform': function (nextAppVersion) {
+                    'conform'(nextAppVersion) {
                         return semver.gte(nextAppVersion, appVersion);
                     }
                 }

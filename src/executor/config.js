@@ -4,7 +4,6 @@
  */
 
 const {
-    defaults,
     getProjectConfig,
     getUserConfig,
     saveProjectConfig,
